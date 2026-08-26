@@ -1,0 +1,41 @@
+{% extends 'store/base.html' %}
+{% block title %}Productos — Sports Deal{% endblock %}
+{% block content %}
+
+<h2 class="mb-3">{% if category %}{{ category.name }}{% else %}Todos los productos{% endif %}</h2>
+
+<div class="mb-4">
+    <a href="{% url 'store:product_list' %}" class="category-pill {% if not category %}active{% endif %}">Todas</a>
+    {% for cat in categories %}
+    <a href="{% url 'store:product_list_by_category' cat.slug %}"
+       class="category-pill {% if category.slug == cat.slug %}active{% endif %}">{{ cat.name }}</a>
+    {% endfor %}
+</div>
+
+<div class="row g-4">
+    {% for product in products %}
+    <div class="col-6 col-md-4 col-lg-3">
+        <div class="card product-card">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+            {% else %}
+            <div class="card-img-top d-flex align-items-center justify-content-center text-secondary">
+                <i class="fa-solid fa-image fa-2x"></i>
+            </div>
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+                <h6 class="card-title">{{ product.name }}</h6>
+                <p class="price mb-1">${{ product.price }}</p>
+                {% if not product.in_stock %}
+                <span class="badge badge-stock-out mb-2 align-self-start">Sin stock</span>
+                {% endif %}
+                <a href="{{ product.get_absolute_url }}" class="btn btn-outline-dark btn-sm mt-auto">Ver producto</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-secondary">No se encontraron productos{% if query %} para "{{ query }}"{% endif %}.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

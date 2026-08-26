@@ -1,0 +1,26 @@
+{% extends 'store/base.html' %}
+{% block title %}Resultado del pago — Sports Deal{% endblock %}
+{% block content %}
+
+<div class="text-center py-5">
+    {% if result == 'success' %}
+        <i class="fa-solid fa-circle-check text-success" style="font-size:5rem;"></i>
+        <h2 class="mt-3">¡Gracias por tu compra!</h2>
+        <p class="text-secondary">Tu pedido <strong>#{{ order.id }}</strong> fue registrado correctamente.
+            Te enviaremos la confirmación por email a {{ order.email }}.</p>
+    {% elif result == 'pending' %}
+        <i class="fa-solid fa-clock text-warning" style="font-size:5rem;"></i>
+        <h2 class="mt-3">Tu pago está pendiente</h2>
+        <p class="text-secondary">Estamos esperando la confirmación de MercadoPago para el pedido
+            <strong>#{{ order.id }}</strong>. Te avisaremos por email apenas se confirme.</p>
+    {% else %}
+        <i class="fa-solid fa-circle-xmark text-danger" style="font-size:5rem;"></i>
+        <h2 class="mt-3">El pago no se pudo completar</h2>
+        <p class="text-secondary">Hubo un problema al procesar el pago del pedido <strong>#{{ order.id }}</strong>.
+            Podés intentar nuevamente.</p>
+    {% endif %}
+
+    <a href="{% url 'store:product_list' %}" class="btn btn-accent mt-3">Seguir comprando</a>
+</div>
+
+{% endblock %}

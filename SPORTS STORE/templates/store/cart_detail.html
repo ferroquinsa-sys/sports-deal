@@ -1,0 +1,71 @@
+{% extends 'store/base.html' %}
+{% block title %}Carrito — Sports Deal{% endblock %}
+{% block content %}
+
+<h2 class="mb-4"><i class="fa-solid fa-cart-shopping me-2"></i>Tu carrito</h2>
+
+{% if cart|length == 0 %}
+<p class="text-secondary">Tu carrito está vacío. <a href="{% url 'store:product_list' %}">Ver productos</a></p>
+{% else %}
+<div class="table-responsive">
+<table class="table align-middle bg-white rounded-3">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in cart %}
+        <tr>
+            <td class="d-flex align-items-center gap-3">
+                {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" class="cart-item-img" alt="{{ item.product.name }}">
+                {% endif %}
+                <a href="{{ item.product.get_absolute_url }}" class="text-decoration-none text-dark fw-semibold">
+                    {{ item.product.name }}
+                </a>
+            </td>
+            <td>${{ item.price }}</td>
+            <td style="width:140px;">
+                <form method="post" action="{% url 'store:cart_update' item.product.id %}" class="d-flex">
+                    {% csrf_token %}
+                    <input type="number" name="quantity" value="{{ item.quantity }}" min="1"
+                           max="{{ item.product.stock }}" class="form-control form-control-sm" style="width:70px;">
+                    <button type="submit" class="btn btn-sm btn-outline-secondary ms-1">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                </form>
+            </td>
+            <td class="fw-semibold">${{ item.subtotal }}</td>
+            <td>
+                <form method="post" action="{% url 'store:cart_remove' item.product.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<div class="d-flex justify-content-end">
+    <div class="checkout-summary" style="min-width:300px;">
+        <div class="d-flex justify-content-between mb-2">
+            <span>Total</span>
+            <strong class="fs-5">${{ cart.get_total }}</strong>
+        </div>
+        <a href="{% url 'store:checkout' %}" class="btn btn-accent w-100">
+            Continuar con el pago <i class="fa-solid fa-arrow-right ms-1"></i>
+        </a>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

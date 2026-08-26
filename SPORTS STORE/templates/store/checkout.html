@@ -1,0 +1,53 @@
+{% extends 'store/base.html' %}
+{% block title %}Finalizar compra — Sports Deal{% endblock %}
+{% block content %}
+
+<h2 class="mb-4">Finalizar compra</h2>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="bg-white p-4 rounded-3">
+            <h5 class="mb-3">Datos de envío y contacto</h5>
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="text-danger small">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="alert alert-info d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-shield-halved fa-lg"></i>
+                    <span class="small mb-0">Vas a ser redirigido a MercadoPago para completar el pago de forma segura.</span>
+                </div>
+
+                <button type="submit" class="btn btn-accent w-100 btn-lg">
+                    <i class="fa-brands fa-cc-mastercard me-2"></i>Pagar con MercadoPago
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="checkout-summary">
+            <h5 class="mb-3">Resumen del pedido</h5>
+            {% for item in cart %}
+            <div class="d-flex justify-content-between mb-2 small">
+                <span>{{ item.quantity }} x {{ item.product.name }}</span>
+                <span>${{ item.subtotal }}</span>
+            </div>
+            {% endfor %}
+            <hr>
+            <div class="d-flex justify-content-between">
+                <strong>Total</strong>
+                <strong class="fs-5">${{ cart.get_total }}</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sports Deal — Artículos de Deportes{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'store/img/logo.png' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <link href="{% static 'store/css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url 'store:home' %}">
+            <img src="{% static 'store/img/logo.png' %}" alt="Sports Deal" class="navbar-brand-logo me-2">
+            Sports Deal
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMenu">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="{% url 'store:home' %}">Inicio</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'store:product_list' %}">Productos</a></li>
+            </ul>
+            <form class="d-flex me-3" role="search" method="get" action="{% url 'store:product_list' %}">
+                <input class="form-control form-control-sm" type="search" name="q" placeholder="Buscar producto..." value="{{ query|default:'' }}">
+            </form>
+            <a href="{% url 'store:cart_detail' %}" class="btn btn-warning position-relative">
+                <i class="fa-solid fa-cart-shopping"></i> Carrito
+                {% if cart_items_count %}
+                <span class="badge rounded-pill bg-danger position-absolute top-0 start-100 translate-middle">
+                    {{ cart_items_count }}
+                </span>
+                {% endif %}
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-3">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<main class="container my-4">
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="footer-dark mt-5 py-4">
+    <div class="container text-center">
+        <img src="{% static 'store/img/logo.png' %}" alt="Sports Deal" style="height:34px;" class="mb-2">
+        <p class="mb-1"><strong>Sports Deal</strong> — Artículos de deportes</p>
+        <p class="mb-0 small text-secondary">Pagos procesados de forma segura con MercadoPago</p>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
