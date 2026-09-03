@@ -100,6 +100,23 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# --- Almacenamiento de imágenes en la nube (Cloudflare R2) ---
+INSTALLED_APPS += ['storages']
+USE_R2_STORAGE = config('USE_R2_STORAGE', default=False, cast=bool)
+
+if USE_R2_STORAGE:
+    AWS_ACCESS_KEY_ID = config('R2_ACCESS_KEY_ID', default='')
+    AWS_SECRET_ACCESS_KEY = config('R2_SECRET_ACCESS_KEY', default='')
+    AWS_STORAGE_BUCKET_NAME = config('R2_BUCKET_NAME', default='')
+    AWS_S3_ENDPOINT_URL = config('R2_ENDPOINT_URL', default='')
+    AWS_S3_CUSTOM_DOMAIN = config('R2_PUBLIC_DOMAIN', default='')
+    AWS_DEFAULT_ACL = None
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_QUERYSTRING_AUTH = False
+    AWS_S3_ADDRESSING_STYLE = 'virtual'
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # --- MercadoPago ---
